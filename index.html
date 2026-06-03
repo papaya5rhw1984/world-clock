@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e1a2b">
+<title>World Clock — 세계 시계 (v.u.1.0)</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+    background:linear-gradient(165deg,#13263d 0%,#0e1a2b 55%,#080f1a 100%);color:#e8eef7;min-height:100vh;
+    padding:calc(20px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));}
+  .wrap{max-width:480px;margin:0 auto;}
+  header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;}
+  h1{font-size:24px;font-weight:800;}
+  h1 .a{background:linear-gradient(90deg,#5ed0ff,#7c9bff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  h1 .ver{font-size:10px;color:#6b7686;font-weight:600;margin-left:4px;}
+  .studio{font-size:11px;color:#6b7686;}
+  .sub{font-size:12px;color:#94a0b4;margin:2px 0 16px;}
+  .toolbar{display:flex;gap:8px;margin-bottom:10px;align-items:center;}
+  .toolbar .seg{display:flex;background:rgba(255,255,255,.05);border:1px solid #22324a;border-radius:10px;overflow:hidden;}
+  .toolbar .seg button{background:transparent;border:0;color:#94a0b4;padding:8px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .toolbar .seg button.on{background:linear-gradient(135deg,#5ed0ff,#7c9bff);color:#0e1a2b;}
+  .toolbar .add{margin-left:auto;background:linear-gradient(135deg,#5ed0ff,#7c9bff);color:#0e1a2b;border:0;border-radius:10px;
+    padding:9px 15px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .toolbar2{display:flex;gap:8px;margin-bottom:14px;}
+  .planbtn{background:rgba(255,255,255,.05);border:1px solid #22324a;color:#94a0b4;border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .planbtn.on{background:linear-gradient(135deg,#ffd27c,#ff9d5e);color:#0e1a2b;border-color:transparent;}
+  .planner{display:none;background:rgba(255,255,255,.04);border:1px solid #2a3a55;border-radius:14px;padding:13px 15px;margin-bottom:14px;}
+  .planner.show{display:block;}
+  .planner .prow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .planner .pl{font-size:15px;font-weight:800;color:#ffd27c;}
+  .planner .pnow{background:rgba(255,255,255,.06);border:1px solid #3a4d6a;color:#cdd6e4;border-radius:8px;padding:6px 11px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .planner input[type=range]{width:100%;accent-color:#ffd27c;height:22px;}
+  .planner .ph{font-size:11px;color:#7c889c;margin-top:5px;line-height:1.5;}
+  .list{display:flex;flex-direction:column;gap:10px;}
+  .card{background:rgba(255,255,255,.045);border:1px solid #21314a;border-radius:16px;padding:14px 16px;
+    display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;transition:background .25s;cursor:pointer;}
+  .card:active{background:rgba(94,208,255,.08);}
+  .card.local{border-color:#5ed0ff;box-shadow:0 0 0 1px rgba(94,208,255,.35),0 8px 24px rgba(94,208,255,.08);}
+  .card.night{background:rgba(11,17,33,.66);}
+  .card .dot{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;
+    background:linear-gradient(135deg,#1d3450,#13263d);border:1px solid #2a3e5c;}
+  .card .info{flex:1;min-width:0;}
+  .card .city{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .card .meta{font-size:11.5px;color:#8a97ac;margin-top:1px;}
+  .card .meta .dn{margin-right:3px;}
+  .card .meta .diff{color:#5ed0ff;font-weight:600;}
+  .card .meta .work{color:#7fe0a0;font-weight:700;margin-left:5px;}
+  .card .time{text-align:right;flex-shrink:0;}
+  .card .time .t{font-size:23px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.5px;}
+  .card .time .t .ap{font-size:12px;color:#94a0b4;margin-left:3px;font-weight:600;}
+  .card .time .d{font-size:11px;color:#8a97ac;margin-top:1px;}
+  .card .del{position:absolute;top:8px;right:10px;background:transparent;border:0;color:#5b6577;cursor:pointer;font-size:14px;padding:2px 4px;}
+  .card .del:hover{color:#ef6a6a;}
+  .badge{font-size:9.5px;font-weight:700;color:#0e1a2b;background:#5ed0ff;border-radius:5px;padding:1px 5px;margin-left:6px;vertical-align:middle;}
+  .empty{text-align:center;color:#6b7686;font-size:13px;padding:30px 0;font-style:italic;}
+  footer{margin-top:18px;font-size:11px;color:#5b6577;text-align:center;line-height:1.5;}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);background:#16273d;border:1px solid #2a3e5c;
+    color:#e8eef7;padding:10px 16px;border-radius:10px;font-size:12.5px;opacity:0;transition:all .25s;pointer-events:none;z-index:40;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .modal{position:fixed;inset:0;background:rgba(6,11,18,.78);backdrop-filter:blur(5px);display:none;align-items:flex-end;justify-content:center;z-index:30;}
+  .modal.show{display:flex;}
+  .sheet{background:linear-gradient(180deg,#16273d,#0e1a2b);width:100%;max-width:480px;border-radius:20px 20px 0 0;
+    border:1px solid #22324a;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:78vh;display:flex;flex-direction:column;}
+  .sheet h2{font-size:16px;margin-bottom:10px;}
+  .search{width:100%;background:#0b1422;border:1px solid #22324a;color:#e8eef7;border-radius:10px;padding:11px 13px;font-size:15px;font-family:inherit;margin-bottom:12px;}
+  .search:focus{outline:none;border-color:#5ed0ff;}
+  .opts{overflow-y:auto;display:flex;flex-direction:column;gap:6px;}
+  .opt{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid #1d2b40;border-radius:10px;padding:11px 13px;cursor:pointer;}
+  .opt:hover{border-color:#5ed0ff;}
+  .opt.added{opacity:.4;}
+  .opt .oc{font-size:18px;}
+  .opt .on{flex:1;font-size:14px;}
+  .opt .od{font-size:11px;color:#8a97ac;}
+  .closeBtn{margin-top:10px;background:rgba(255,255,255,.06);border:1px solid #2a3a55;color:#cdd6e4;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🌍 <span class="a">World Clock</span> <span class="ver">v.u.1.0</span></h1>
+    <div class="studio">Toolbelt Co</div>
+  </header>
+  <div class="sub">전 세계 도시 시간 · 미팅 플래너 · 카드 탭하면 복사 · 오프라인</div>
+  <div class="toolbar">
+    <div class="seg" id="fmtSeg">
+      <button data-fmt="24" class="on">24시간</button>
+      <button data-fmt="12">오전/오후</button>
+    </div>
+    <button class="add" id="addBtn">＋ 도시 추가</button>
+  </div>
+  <div class="toolbar2">
+    <button class="planbtn" id="planBtn">📅 미팅 플래너</button>
+  </div>
+  <div class="planner" id="planner">
+    <div class="prow">
+      <span class="pl" id="planLabel">내 시간</span>
+      <button class="pnow" id="planNow">지금으로</button>
+    </div>
+    <input type="range" id="planSlider" min="0" max="1439" step="5" value="0" aria-label="기준 시각 (내 시간)" />
+    <div class="ph">슬라이더로 <b>내 시간</b>을 옮기면 모든 도시 시간이 함께 변환 — <b>🟢 업무시간(09–18시)</b> 도시가 표시돼 미팅 잡기에 딱.</div>
+  </div>
+  <div class="list" id="list"></div>
+  <footer>카드를 탭하면 그 도시 시간이 복사돼요 · ☀️/🌙 낮밤 표시 · 내 위치 자동 강조<br>모든 데이터는 기기에만 저장 (오프라인)</footer>
+</div>
+
+<div class="modal" id="modal">
+  <div class="sheet">
+    <h2>도시 추가</h2>
+    <input class="search" id="search" placeholder="도시·국가·시간대 검색 (예: 런던, Tokyo, +9)" />
+    <div class="opts" id="opts"></div>
+    <button class="closeBtn" id="closeBtn">닫기</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+var CURATED={
+  "Asia/Seoul":{city:"서울",country:"대한민국",emoji:"🇰🇷"},
+  "Asia/Tokyo":{city:"도쿄",country:"일본",emoji:"🇯🇵"},
+  "Asia/Shanghai":{city:"상하이",country:"중국",emoji:"🇨🇳"},
+  "Asia/Hong_Kong":{city:"홍콩",country:"홍콩",emoji:"🇭🇰"},
+  "Asia/Taipei":{city:"타이베이",country:"대만",emoji:"🇹🇼"},
+  "Asia/Singapore":{city:"싱가포르",country:"싱가포르",emoji:"🇸🇬"},
+  "Asia/Ho_Chi_Minh":{city:"호치민",country:"베트남",emoji:"🇻🇳"},
+  "Asia/Bangkok":{city:"방콕",country:"태국",emoji:"🇹🇭"},
+  "Asia/Jakarta":{city:"자카르타",country:"인도네시아",emoji:"🇮🇩"},
+  "Asia/Manila":{city:"마닐라",country:"필리핀",emoji:"🇵🇭"},
+  "Asia/Kuala_Lumpur":{city:"쿠알라룸푸르",country:"말레이시아",emoji:"🇲🇾"},
+  "Asia/Yangon":{city:"양곤",country:"미얀마",emoji:"🇲🇲"},
+  "Asia/Dhaka":{city:"다카",country:"방글라데시",emoji:"🇧🇩"},
+  "Asia/Kolkata":{city:"뉴델리·뭄바이",country:"인도",emoji:"🇮🇳"},
+  "Asia/Karachi":{city:"카라치",country:"파키스탄",emoji:"🇵🇰"},
+  "Asia/Kathmandu":{city:"카트만두",country:"네팔",emoji:"🇳🇵"},
+  "Asia/Dubai":{city:"두바이",country:"UAE",emoji:"🇦🇪"},
+  "Asia/Riyadh":{city:"리야드",country:"사우디",emoji:"🇸🇦"},
+  "Asia/Tehran":{city:"테헤란",country:"이란",emoji:"🇮🇷"},
+  "Asia/Jerusalem":{city:"예루살렘",country:"이스라엘",emoji:"🇮🇱"},
+  "Europe/Moscow":{city:"모스크바",country:"러시아",emoji:"🇷🇺"},
+  "Europe/Istanbul":{city:"이스탄불",country:"튀르키예",emoji:"🇹🇷"},
+  "Europe/Paris":{city:"파리",country:"프랑스",emoji:"🇫🇷"},
+  "Europe/Berlin":{city:"베를린",country:"독일",emoji:"🇩🇪"},
+  "Europe/London":{city:"런던",country:"영국",emoji:"🇬🇧"},
+  "Europe/Madrid":{city:"마드리드",country:"스페인",emoji:"🇪🇸"},
+  "Europe/Rome":{city:"로마",country:"이탈리아",emoji:"🇮🇹"},
+  "Europe/Amsterdam":{city:"암스테르담",country:"네덜란드",emoji:"🇳🇱"},
+  "Europe/Zurich":{city:"취리히",country:"스위스",emoji:"🇨🇭"},
+  "Europe/Stockholm":{city:"스톡홀름",country:"스웨덴",emoji:"🇸🇪"},
+  "America/New_York":{city:"뉴욕",country:"미국",emoji:"🇺🇸"},
+  "America/Chicago":{city:"시카고",country:"미국",emoji:"🇺🇸"},
+  "America/Denver":{city:"덴버",country:"미국",emoji:"🇺🇸"},
+  "America/Los_Angeles":{city:"로스앤젤레스",country:"미국",emoji:"🇺🇸"},
+  "America/Toronto":{city:"토론토",country:"캐나다",emoji:"🇨🇦"},
+  "America/Vancouver":{city:"밴쿠버",country:"캐나다",emoji:"🇨🇦"},
+  "America/Mexico_City":{city:"멕시코시티",country:"멕시코",emoji:"🇲🇽"},
+  "America/Sao_Paulo":{city:"상파울루",country:"브라질",emoji:"🇧🇷"},
+  "America/Argentina/Buenos_Aires":{city:"부에노스아이레스",country:"아르헨티나",emoji:"🇦🇷"},
+  "America/Santiago":{city:"산티아고",country:"칠레",emoji:"🇨🇱"},
+  "America/Bogota":{city:"보고타",country:"콜롬비아",emoji:"🇨🇴"},
+  "America/Lima":{city:"리마",country:"페루",emoji:"🇵🇪"},
+  "Australia/Sydney":{city:"시드니",country:"호주",emoji:"🇦🇺"},
+  "Australia/Perth":{city:"퍼스",country:"호주",emoji:"🇦🇺"},
+  "Pacific/Auckland":{city:"오클랜드",country:"뉴질랜드",emoji:"🇳🇿"},
+  "Pacific/Honolulu":{city:"호놀룰루",country:"하와이",emoji:"🇺🇸"},
+  "Africa/Cairo":{city:"카이로",country:"이집트",emoji:"🇪🇬"},
+  "Africa/Lagos":{city:"라고스",country:"나이지리아",emoji:"🇳🇬"},
+  "Africa/Nairobi":{city:"나이로비",country:"케냐",emoji:"🇰🇪"},
+  "Africa/Johannesburg":{city:"요하네스버그",country:"남아공",emoji:"🇿🇦"},
+  "UTC":{city:"UTC",country:"협정 세계시",emoji:"🌐"}
+};
+var REGION_KO={Asia:"아시아",Europe:"유럽",America:"아메리카",Africa:"아프리카",Australia:"오세아니아",Pacific:"태평양",Atlantic:"대서양",Indian:"인도양",Antarctica:"남극",Arctic:"북극",Etc:"기타",UTC:"세계시"};
+var ALL_TZ=[];
+try{ if(typeof Intl!=="undefined" && Intl.supportedValuesOf) ALL_TZ=Intl.supportedValuesOf("timeZone"); }catch(e){}
+if(!ALL_TZ || !ALL_TZ.length){ ALL_TZ=Object.keys(CURATED); }
+if(ALL_TZ.indexOf("UTC")<0) ALL_TZ=ALL_TZ.concat(["UTC"]);
+function deriveCity(tz){
+  var seg=tz.split("/");
+  var city=seg[seg.length-1].replace(/_/g," ");
+  var region=REGION_KO[seg[0]]||seg[0];
+  return {city:city,country:region,emoji:"🕒"};
+}
+var CITIES=ALL_TZ.map(function(tz){
+  var c=CURATED[tz];
+  if(c) return {tz:tz,city:c.city,country:c.country,emoji:c.emoji,curated:true};
+  var d=deriveCity(tz);
+  return {tz:tz,city:d.city,country:d.country,emoji:d.emoji,curated:false};
+});
+
+var LS_KEY="worldclock_cities_v1", LS_FMT="worldclock_fmt_v1";
+function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+var localTz="UTC";
+try{ localTz=Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC"; }catch(e){}
+
+var selected;
+try{ selected=JSON.parse(lsGet(LS_KEY,"null")); }catch(e){ selected=null; }
+if(!selected||!selected.length){
+  selected=[localTz,"America/New_York","Europe/London","Asia/Tokyo"].filter(function(v,i,a){ return a.indexOf(v)===i; });
+}
+var fmt=lsGet(LS_FMT,"24");
+var planMin=null;
+
+var listEl=document.getElementById("list");
+var modal=document.getElementById("modal"), optsEl=document.getElementById("opts"), searchEl=document.getElementById("search");
+var plannerEl=document.getElementById("planner"), planBtn=document.getElementById("planBtn"),
+    planSlider=document.getElementById("planSlider"), planLabel=document.getElementById("planLabel"), planNow=document.getElementById("planNow");
+var toastEl=document.getElementById("toast"), toastTimer=0;
+
+function cityByTz(tz){
+  for(var i=0;i<CITIES.length;i++) if(CITIES[i].tz===tz) return CITIES[i];
+  var name=tz.split("/").pop().replace(/_/g," ");
+  return {tz:tz,city:name,country:"",emoji:"🕒"};
+}
+function offsetMinutes(tz,date){
+  try{
+    var dtf=new Intl.DateTimeFormat("en-US",{timeZone:tz,hour12:false,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"});
+    var parts={}; dtf.formatToParts(date).forEach(function(p){ parts[p.type]=p.value; });
+    var asUTC=Date.UTC(+parts.year,+parts.month-1,+parts.day,+parts.hour,+parts.minute,+parts.second);
+    return Math.round((asUTC-date.getTime())/60000);
+  }catch(e){ return 0; }
+}
+function fmtDiff(min){
+  if(min===0) return "내 시간";
+  var sign=min>0?"+":"-"; var a=Math.abs(min); var h=Math.floor(a/60), m=a%60;
+  return sign+h+(m?(":"+(m<10?"0":"")+m):"")+"시간";
+}
+function partsFor(tz,date){
+  var opt={timeZone:tz,hour:"2-digit",minute:"2-digit",hour12:(fmt==="12")};
+  var t=new Intl.DateTimeFormat("ko-KR",opt).format(date);
+  var dOpt={timeZone:tz,month:"long",day:"numeric",weekday:"short"};
+  var d=new Intl.DateTimeFormat("ko-KR",dOpt).format(date);
+  return {t:t,d:d};
+}
+function hourIn(tz,date){
+  try{ return (+new Intl.DateTimeFormat("en-US",{timeZone:tz,hour:"2-digit",hour12:false}).format(date))%24; }catch(e){ return 12; }
+}
+function baseDate(){
+  if(planMin==null) return new Date();
+  var d=new Date(); d.setHours(Math.floor(planMin/60), planMin%60, 0, 0); return d;
+}
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]; }); }
+function save(){ lsSet(LS_KEY,JSON.stringify(selected)); }
+
+function toast(msg){
+  toastEl.textContent=msg; toastEl.classList.add("show");
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ toastEl.classList.remove("show"); },1600);
+}
+// v.u.1.0 (콘텐츠): 카드 탭 → 그 도시 시간 클립보드 복사
+function copyTime(r){
+  var d=baseDate(), ci=cityByTz(r.tz), pf=partsFor(r.tz,d);
+  var off=offsetMinutes(r.tz,d)-offsetMinutes(localTz,d);
+  var text=ci.city+" "+pf.t+" ("+pf.d+", "+fmtDiff(off)+")";
+  var done=function(){ toast("📋 복사: "+text); };
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done).catch(function(){ legacyCopy(text); done(); }); }
+  else { legacyCopy(text); done(); }
+}
+function legacyCopy(t){ var ta=document.createElement("textarea"); ta.value=t; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(ta); }
+
+// 카드는 한 번만 생성, 시간은 텍스트만 갱신
+var cardRefs=[];
+function buildList(){
+  listEl.innerHTML=""; cardRefs=[];
+  if(selected.length===0){ listEl.innerHTML='<div class="empty">표시할 도시가 없어요. ＋ 도시 추가를 눌러보세요.</div>'; return; }
+  selected.forEach(function(tz){
+    var ci=cityByTz(tz), isLocal=(tz===localTz);
+    var card=document.createElement("div");
+    card.className="card"+(isLocal?" local":"");
+    card.innerHTML=
+      '<div class="dot"></div>'+
+      '<div class="info"><div class="city">'+esc(ci.city)+(isLocal?'<span class="badge">내 위치</span>':'')+'</div>'+
+        '<div class="meta"><span class="dn"></span>'+esc(ci.country)+' · <span class="diff"></span><span class="work"></span></div></div>'+
+      '<div class="time"><div class="t"></div><div class="d"></div></div>'+
+      (isLocal?'':'<button class="del" aria-label="삭제">✕</button>');
+    listEl.appendChild(card);
+    var ref={tz:tz,emoji:ci.emoji,card:card,
+      dotEl:card.querySelector(".dot"), dnEl:card.querySelector(".dn"), diffEl:card.querySelector(".diff"),
+      workEl:card.querySelector(".work"), timeEl:card.querySelector(".t"), dateEl:card.querySelector(".d")};
+    cardRefs.push(ref);
+    card.addEventListener("click",function(e){ if(e.target.classList.contains("del")) return; copyTime(ref); });
+    var del=card.querySelector(".del");
+    if(del) del.addEventListener("click",function(e){ e.stopPropagation(); selected=selected.filter(function(t){ return t!==tz; }); save(); buildList(); updateTimes(); });
+  });
+  updateTimes();
+}
+function updateTimes(){
+  if(!cardRefs.length) return;
+  var d=baseDate(), localOff=offsetMinutes(localTz,d), planning=(planMin!=null);
+  cardRefs.forEach(function(r){
+    var off=offsetMinutes(r.tz,d)-localOff;
+    var pf=partsFor(r.tz,d);
+    var tHtml=pf.t;
+    if(fmt==="12"){ var mt=pf.t.match(/^(오전|오후)\s*(.+)$/); if(mt) tHtml=mt[2]+'<span class="ap">'+mt[1]+'</span>'; }
+    r.timeEl.innerHTML=tHtml;
+    r.dateEl.textContent=pf.d;
+    r.diffEl.textContent=fmtDiff(off);
+    r.dotEl.textContent=r.emoji;
+    var h=hourIn(r.tz,d), day=(h>=6&&h<18);
+    r.dnEl.textContent=day?"☀️":"🌙";
+    r.card.classList.toggle("night",!day);
+    // v.u.1.0 (콘텐츠): 플래너 모드 시 업무시간(09-18) 강조
+    r.workEl.textContent = (planning && h>=9 && h<18) ? "🟢 업무중" : "";
+  });
+}
+
+// 미팅 플래너
+function fmtLocalLabel(){
+  var d=baseDate();
+  var t=new Intl.DateTimeFormat("ko-KR",{hour:"2-digit",minute:"2-digit",hour12:(fmt==="12")}).format(d);
+  var wd=new Intl.DateTimeFormat("ko-KR",{weekday:"short"}).format(d);
+  return "내 시간 "+t+" ("+wd+")";
+}
+function updatePlanLabel(){ planLabel.textContent = (planMin==null) ? "실시간" : fmtLocalLabel(); }
+function setPlanner(on){
+  if(on){ var n=new Date(); planMin=n.getHours()*60+n.getMinutes(); planSlider.value=planMin; plannerEl.classList.add("show"); planBtn.classList.add("on"); }
+  else { planMin=null; plannerEl.classList.remove("show"); planBtn.classList.remove("on"); }
+  updatePlanLabel(); updateTimes();
+}
+planBtn.addEventListener("click",function(){ setPlanner(planMin==null); });
+planSlider.addEventListener("input",function(){ planMin=+planSlider.value; updatePlanLabel(); updateTimes(); });
+planNow.addEventListener("click",function(){ var n=new Date(); planMin=n.getHours()*60+n.getMinutes(); planSlider.value=planMin; updatePlanLabel(); updateTimes(); });
+
+// 추가 모달
+function openModal(){ searchEl.value=""; renderOpts(""); modal.classList.add("show"); setTimeout(function(){ try{searchEl.focus();}catch(e){} },50); }
+function closeModal(){ modal.classList.remove("show"); }
+function renderOpts(q){
+  q=(q||"").toLowerCase().trim();
+  optsEl.innerHTML="";
+  var now=new Date(), localOff=offsetMinutes(localTz,now);
+  var pool=CITIES.filter(function(c){
+    if(!q) return c.curated;
+    var off=fmtDiff(offsetMinutes(c.tz,now)-localOff);
+    return (c.city+" "+c.country+" "+c.tz+" "+off).toLowerCase().indexOf(q)>=0;
+  });
+  var LIMIT=200; var shown=pool.slice(0,LIMIT);
+  if(!q){
+    var hint=document.createElement("div");
+    hint.style.cssText="font-size:11.5px;color:#7c889c;padding:2px 2px 6px;";
+    hint.textContent="인기 도시 "+pool.length+"개 · 검색하면 전 세계 "+CITIES.length+"개 시간대 모두 추가 가능";
+    optsEl.appendChild(hint);
+  }
+  shown.forEach(function(c){
+    var added=selected.indexOf(c.tz)>=0;
+    var off=offsetMinutes(c.tz,now)-localOff;
+    var o=document.createElement("div");
+    o.className="opt"+(added?" added":"");
+    o.innerHTML='<span class="oc">'+c.emoji+'</span><span class="on">'+esc(c.city)+' <span class="od">'+esc(c.country)+'</span></span><span class="od">'+fmtDiff(off)+'</span>';
+    if(!added) o.addEventListener("click",function(){ selected.push(c.tz); save(); buildList(); updateTimes(); closeModal(); });
+    optsEl.appendChild(o);
+  });
+  if(pool.length>LIMIT){
+    var more=document.createElement("div");
+    more.style.cssText="font-size:11.5px;color:#7c889c;text-align:center;padding:8px;";
+    more.textContent="…그 외 "+(pool.length-LIMIT)+"개 — 검색어를 더 입력해 좁혀보세요";
+    optsEl.appendChild(more);
+  }
+  if(shown.length===0) optsEl.innerHTML='<div class="empty">검색 결과 없음 — 도시 영문명(예: Hanoi)으로도 찾아보세요</div>';
+}
+
+document.getElementById("addBtn").addEventListener("click",openModal);
+document.getElementById("closeBtn").addEventListener("click",closeModal);
+modal.addEventListener("click",function(e){ if(e.target===modal) closeModal(); });
+searchEl.addEventListener("input",function(){ renderOpts(searchEl.value); });
+document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeModal(); });
+
+document.querySelectorAll("#fmtSeg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    fmt=b.dataset.fmt; lsSet(LS_FMT,fmt);
+    document.querySelectorAll("#fmtSeg button").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on"); updateTimes(); updatePlanLabel();
+  });
+});
+if(fmt==="12"){ document.querySelectorAll("#fmtSeg button").forEach(function(x){ x.classList.toggle("on",x.dataset.fmt==="12"); }); }
+
+buildList();
+updatePlanLabel();
+setInterval(function(){ if(planMin==null) updateTimes(); },1000);
+
+if("serviceWorker" in navigator){ window.addEventListener("load",function(){ navigator.serviceWorker.register("./sw.js").catch(function(){}); }); }
+})();
+</script>
+</body>
+</html>

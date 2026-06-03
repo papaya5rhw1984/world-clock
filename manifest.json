@@ -1,0 +1,36 @@
+{
+  "name": "World Clock — 세계 시계 (v.u.1.0)",
+  "short_name": "World Clock",
+  "description": "Toolbelt Co — 전 세계 도시 시간 + 미팅 플래너(업무시간 강조) + 낮밤 + 카드 탭 복사 (발전 스튜디오 v.u.1.0). 오프라인.",
+  "lang": "ko",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e1a2b",
+  "theme_color": "#0e1a2b",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": [
+    "utilities",
+    "productivity"
+  ]
+}
