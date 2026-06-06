@@ -1,14 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#13263d"/><stop offset="100%" stop-color="#080f1a"/></linearGradient>
-    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#5ed0ff"/><stop offset="100%" stop-color="#7c9bff"/></linearGradient>
-  </defs>
-  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
-  <circle cx="96" cy="96" r="56" fill="none" stroke="url(#ring)" stroke-width="7"/>
-  <circle cx="96" cy="96" r="56" fill="#0e1a2b" opacity="0.4"/>
-  <ellipse cx="96" cy="96" rx="22" ry="56" fill="none" stroke="#5ed0ff" stroke-width="3" opacity="0.5"/>
-  <line x1="40" y1="96" x2="152" y2="96" stroke="#5ed0ff" stroke-width="3" opacity="0.5"/>
-  <line x1="96" y1="96" x2="96" y2="58" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
-  <line x1="96" y1="96" x2="124" y2="110" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
-  <circle cx="96" cy="96" r="6" fill="#7c9bff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><style>@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&amp;display=swap');</style>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#13263d"/><stop offset="100%" stop-color="#080f1a"/></linearGradient>
+<linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#5ed0ff"/><stop offset="100%" stop-color="#7c9bff"/></linearGradient>
+</defs>
+<rect width="512" height="512" rx="107" fill="url(#bg)"/>
+<circle cx="256" cy="256" r="149" fill="none" stroke="url(#ring)" stroke-width="19"/>
+<circle cx="256" cy="256" r="149" fill="#0e1a2b" opacity="0.4"/>
+<ellipse cx="256" cy="256" rx="59" ry="149" fill="none" stroke="#5ed0ff" stroke-width="8" opacity="0.5"/>
+<line x1="107" y1="256" x2="405" y2="256" stroke="#5ed0ff" stroke-width="8" opacity="0.5"/>
+<line x1="256" y1="256" x2="256" y2="155" stroke="#fff" stroke-width="16" stroke-linecap="round"/>
+<line x1="256" y1="256" x2="331" y2="293" stroke="#fff" stroke-width="16" stroke-linecap="round"/>
+<circle cx="256" cy="256" r="16" fill="#7c9bff"/>
+<circle cx="410" cy="102" r="74" fill="#ffffff" stroke="#cfe3fb" stroke-width="5"/>
+<text x="394" y="140" font-family="Poppins" font-weight="700" font-size="104" fill="#5b9be8" text-anchor="middle">R</text>
+<g transform="translate(436,82) scale(1.35)" fill="#5b9be8"><ellipse cx="3" cy="1" rx="15" ry="9"/><circle cx="-11" cy="-2" r="7.5"/><circle cx="-19" cy="0" r="2.3"/><circle cx="-6" cy="-11" r="6"/><path d="M16 4q14 3 7 -9q-4 -7 9 -8" fill="none" stroke="#5b9be8" stroke-width="2.4" stroke-linecap="round"/></g>
 </svg>
