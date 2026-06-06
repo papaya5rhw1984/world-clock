@@ -1,4 +1,4 @@
-const CACHE="world-clock-v-u-1-0";
+const CACHE="world-clock-v-u-1-2";
 const ASSETS=["./","./index.html","./manifest.json","./icon.svg"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));self.skipWaiting();});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(x=>x!==CACHE).map(x=>caches.delete(x)))));self.clients.claim();});

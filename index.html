@@ -3,82 +3,184 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0e1a2b">
+<meta name="theme-color" content="#eaf3ff">
 <title>World Clock — 세계 시계 (v.u.1.0)</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <style>
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-  body{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
-    background:linear-gradient(165deg,#13263d 0%,#0e1a2b 55%,#080f1a 100%);color:#e8eef7;min-height:100vh;
+  /* ===== 기본(파스텔) 테마 변수 ===== */
+  body{
+    --bg:linear-gradient(170deg,#eaf3ff 0%,#f1ecff 52%,#ffeef6 100%);
+    --text:#3a3f55;--muted:#9aa2b6;--muted2:#a4abbd;--footer:#aab2c4;
+    --card:#ffffff;--cardBorder:#eef0f8;--cardShadow:0 6px 16px rgba(135,145,190,.12);
+    --localBorder:#aeccff;--localRing:#ddebff;--localShadow:0 10px 22px rgba(150,175,255,.22);
+    --night:linear-gradient(135deg,#f4f1fc,#eaf1ff);
+    --dotBg:linear-gradient(135deg,#eaf3ff,#f7edff);--dotBorder:#ecebf7;
+    --cityText:#3a3f55;--timeText:#363b50;--diff:#7a93ff;--work:#2fc285;
+    --delBg:#f2f1f8;--delColor:#b6bbcb;--delHoverBg:#ffe2ed;--delHoverColor:#ff6fa1;
+    --accent1:#7aa8ff;--accent2:#b78cff;--accentText:#ffffff;
+    --segBg:#ffffff;--segBorder:#e9ecf6;--badgeText:#ffffff;
+    --toastBg:#ffffff;--toastBorder:#e9ecf6;--toastText:#4a4f63;
+    --overlay:rgba(80,90,120,.32);--sheetBg:#ffffff;--sheetBorder:#eef0f8;
+    --searchBg:#f6f7fc;--searchBorder:#e9ecf6;--optBg:#f8f9fd;--optBorder:#eef0f8;
+    --closeBg:#f2f1f8;--closeBorder:#e9e4f5;--closeColor:#8a90a6;
+    --pAcc1:#ffce86;--pAcc2:#ff9d8e;--pText:#ff9d6e;--pnowBg:#fff4ec;--pnowBorder:#ffe0cf;
+    font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;min-height:100vh;
+    background:var(--bg);background-attachment:fixed;color:var(--text);
+    transition:background .3s,color .3s;
     padding:calc(20px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));}
+  /* ===== 다크 ===== */
+  body[data-theme="dark"]{
+    --bg:linear-gradient(165deg,#13263d 0%,#0e1a2b 55%,#080f1a 100%);
+    --text:#e8eef7;--muted:#94a0b4;--muted2:#8a97ac;--footer:#5b6577;
+    --card:rgba(255,255,255,.045);--cardBorder:#21314a;--cardShadow:0 6px 16px rgba(0,0,0,.18);
+    --localBorder:#5ed0ff;--localRing:rgba(94,208,255,.35);--localShadow:0 8px 24px rgba(94,208,255,.10);
+    --night:rgba(11,17,33,.66);
+    --dotBg:linear-gradient(135deg,#1d3450,#13263d);--dotBorder:#2a3e5c;
+    --cityText:#e8eef7;--timeText:#e8eef7;--diff:#5ed0ff;--work:#7fe0a0;
+    --delBg:rgba(255,255,255,.06);--delColor:#7c8aa3;--delHoverBg:rgba(239,106,106,.18);--delHoverColor:#ef6a6a;
+    --accent1:#5ed0ff;--accent2:#7c9bff;--accentText:#0e1a2b;
+    --segBg:rgba(255,255,255,.05);--segBorder:#22324a;--badgeText:#0e1a2b;
+    --toastBg:#16273d;--toastBorder:#2a3e5c;--toastText:#e8eef7;
+    --overlay:rgba(6,11,18,.78);--sheetBg:#16273d;--sheetBorder:#22324a;
+    --searchBg:#0b1422;--searchBorder:#22324a;--optBg:rgba(255,255,255,.04);--optBorder:#1d2b40;
+    --closeBg:rgba(255,255,255,.06);--closeBorder:#2a3a55;--closeColor:#cdd6e4;
+    --pAcc1:#ffd27c;--pAcc2:#ff9d5e;--pText:#ffd27c;--pnowBg:rgba(255,255,255,.06);--pnowBorder:#3a4d6a;}
+  /* ===== 민트 ===== */
+  body[data-theme="mint"]{
+    --bg:linear-gradient(170deg,#e3fbf3 0%,#e6f7ff 55%,#f0fff8 100%);
+    --text:#2f4a47;--muted:#86a39d;--muted2:#9ab4ae;--footer:#9ab4ae;
+    --card:#ffffff;--cardBorder:#e2f2ee;--cardShadow:0 6px 16px rgba(110,180,165,.14);
+    --localBorder:#7ad9c4;--localRing:#cdf3ea;--localShadow:0 10px 22px rgba(110,200,180,.22);
+    --night:linear-gradient(135deg,#eef9f5,#e8f4ff);
+    --dotBg:linear-gradient(135deg,#e3fbf3,#e6f7ff);--dotBorder:#dcf0ea;
+    --cityText:#2f4a47;--timeText:#2b4a45;--diff:#2bb6a0;--work:#23b67e;
+    --delBg:#eef6f3;--delColor:#a6c0ba;--delHoverBg:#ffe2ec;--delHoverColor:#ff7a9d;
+    --accent1:#3fd0b0;--accent2:#46c2e0;--accentText:#ffffff;
+    --segBg:#ffffff;--segBorder:#e2f2ee;--badgeText:#ffffff;
+    --toastBg:#ffffff;--toastBorder:#e2f2ee;--toastText:#2f4a47;
+    --overlay:rgba(60,110,100,.30);--sheetBg:#ffffff;--sheetBorder:#e2f2ee;
+    --searchBg:#f1faf7;--searchBorder:#e2f2ee;--optBg:#f4fbf9;--optBorder:#e7f4f0;
+    --closeBg:#eef6f3;--closeBorder:#dcefe9;--closeColor:#6f928b;
+    --pAcc1:#ffce86;--pAcc2:#ff9d8e;--pText:#ff9d6e;--pnowBg:#fff4ec;--pnowBorder:#ffe0cf;}
+  /* ===== 선셋 ===== */
+  body[data-theme="sunset"]{
+    --bg:linear-gradient(170deg,#fff1e6 0%,#ffe9ec 52%,#ffeefb 100%);
+    --text:#5a4248;--muted:#bba0a0;--muted2:#c4abab;--footer:#c4abab;
+    --card:#ffffff;--cardBorder:#f8ebe6;--cardShadow:0 6px 16px rgba(200,150,140,.14);
+    --localBorder:#ffc09a;--localRing:#ffe6d6;--localShadow:0 10px 22px rgba(255,170,130,.22);
+    --night:linear-gradient(135deg,#fdeef0,#fff0e6);
+    --dotBg:linear-gradient(135deg,#fff1e6,#ffe9ef);--dotBorder:#f6e3da;
+    --cityText:#5a4248;--timeText:#553f44;--diff:#ff8e6e;--work:#3cc88a;
+    --delBg:#f8efe9;--delColor:#cbb3ab;--delHoverBg:#ffe0ea;--delHoverColor:#ff6f9d;
+    --accent1:#ffb07c;--accent2:#ff8e8e;--accentText:#ffffff;
+    --segBg:#ffffff;--segBorder:#f8ebe6;--badgeText:#ffffff;
+    --toastBg:#ffffff;--toastBorder:#f8ebe6;--toastText:#5a4248;
+    --overlay:rgba(120,80,80,.30);--sheetBg:#ffffff;--sheetBorder:#f8ebe6;
+    --searchBg:#fff6f1;--searchBorder:#f8ebe6;--optBg:#fff8f4;--optBorder:#f8ece6;
+    --closeBg:#f8efe9;--closeBorder:#f3e0d8;--closeColor:#a98f88;
+    --pAcc1:#ff9d8e;--pAcc2:#ff7e9d;--pText:#ff7e8e;--pnowBg:#fff0ec;--pnowBorder:#ffd9cf;}
+  /* ===== 미드나잇 ===== */
+  body[data-theme="midnight"]{
+    --bg:linear-gradient(165deg,#241d4a 0%,#171232 55%,#0e0a1e 100%);
+    --text:#e9e4ff;--muted:#a99fc4;--muted2:#9d93b8;--footer:#6b6488;
+    --card:rgba(255,255,255,.05);--cardBorder:#352c5a;--cardShadow:0 6px 16px rgba(0,0,0,.22);
+    --localBorder:#b18cff;--localRing:rgba(177,140,255,.35);--localShadow:0 8px 24px rgba(177,140,255,.12);
+    --night:rgba(14,10,30,.6);
+    --dotBg:linear-gradient(135deg,#2e2658,#1d1740);--dotBorder:#3d3470;
+    --cityText:#e9e4ff;--timeText:#e9e4ff;--diff:#b18cff;--work:#7ce0b0;
+    --delBg:rgba(255,255,255,.06);--delColor:#8a80a8;--delHoverBg:rgba(255,110,160,.18);--delHoverColor:#ff8ab0;
+    --accent1:#b18cff;--accent2:#7c9bff;--accentText:#15102e;
+    --segBg:rgba(255,255,255,.05);--segBorder:#352c5a;--badgeText:#15102e;
+    --toastBg:#231b46;--toastBorder:#3d3470;--toastText:#e9e4ff;
+    --overlay:rgba(8,5,18,.78);--sheetBg:#231b46;--sheetBorder:#352c5a;
+    --searchBg:#15102e;--searchBorder:#352c5a;--optBg:rgba(255,255,255,.04);--optBorder:#2c2350;
+    --closeBg:rgba(255,255,255,.06);--closeBorder:#3d3470;--closeColor:#cdc4e4;
+    --pAcc1:#ffce86;--pAcc2:#ff9d8e;--pText:#ffce86;--pnowBg:rgba(255,255,255,.06);--pnowBorder:#4a3f70;}
+
   .wrap{max-width:480px;margin:0 auto;}
   header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;}
-  h1{font-size:24px;font-weight:800;}
-  h1 .a{background:linear-gradient(90deg,#5ed0ff,#7c9bff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-  h1 .ver{font-size:10px;color:#6b7686;font-weight:600;margin-left:4px;}
-  .studio{font-size:11px;color:#6b7686;}
-  .sub{font-size:12px;color:#94a0b4;margin:2px 0 16px;}
+  h1{font-size:24px;font-weight:800;color:var(--text);}
+  h1 .a{background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  h1 .ver{font-size:10px;color:var(--muted2);font-weight:600;margin-left:4px;}
+  .studio{font-size:11px;color:var(--muted2);}
+  .sub{font-size:12px;color:var(--muted);margin:2px 0 16px;}
   .toolbar{display:flex;gap:8px;margin-bottom:10px;align-items:center;}
-  .toolbar .seg{display:flex;background:rgba(255,255,255,.05);border:1px solid #22324a;border-radius:10px;overflow:hidden;}
-  .toolbar .seg button{background:transparent;border:0;color:#94a0b4;padding:8px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
-  .toolbar .seg button.on{background:linear-gradient(135deg,#5ed0ff,#7c9bff);color:#0e1a2b;}
-  .toolbar .add{margin-left:auto;background:linear-gradient(135deg,#5ed0ff,#7c9bff);color:#0e1a2b;border:0;border-radius:10px;
-    padding:9px 15px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;}
-  .toolbar2{display:flex;gap:8px;margin-bottom:14px;}
-  .planbtn{background:rgba(255,255,255,.05);border:1px solid #22324a;color:#94a0b4;border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
-  .planbtn.on{background:linear-gradient(135deg,#ffd27c,#ff9d5e);color:#0e1a2b;border-color:transparent;}
-  .planner{display:none;background:rgba(255,255,255,.04);border:1px solid #2a3a55;border-radius:14px;padding:13px 15px;margin-bottom:14px;}
+  .toolbar .seg{display:flex;background:var(--segBg);border:1px solid var(--segBorder);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(120,130,170,.10);}
+  .toolbar .seg button{background:transparent;border:0;color:var(--muted);padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .toolbar .seg button.on{background:linear-gradient(135deg,var(--accent1),var(--accent2));color:var(--accentText);}
+  .toolbar .add{margin-left:auto;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:var(--accentText);border:0;border-radius:12px;
+    padding:9px 16px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 5px 13px rgba(130,130,200,.28);}
+  .toolbar .add:active{transform:scale(.96);}
+  .toolbar2{display:flex;gap:8px;margin-bottom:14px;align-items:center;}
+  .planbtn{background:var(--segBg);border:1px solid var(--segBorder);color:var(--muted);border-radius:12px;padding:8px 15px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(120,130,170,.08);}
+  .planbtn.on{background:linear-gradient(135deg,var(--pAcc1),var(--pAcc2));color:#fff;border-color:transparent;}
+  .themes{margin-left:auto;display:flex;gap:7px;align-items:center;}
+  .sw{width:24px;height:24px;border-radius:50%;border:0;cursor:pointer;padding:0;box-shadow:0 1px 4px rgba(0,0,0,.18);
+    outline:2px solid transparent;outline-offset:2px;transition:outline-color .15s,transform .1s;}
+  .sw:active{transform:scale(.9);}
+  .sw.on{outline-color:var(--text);}
+  .sw[data-th="pastel"]{background:linear-gradient(135deg,#8fb6ff,#c39bff);}
+  .sw[data-th="dark"]{background:linear-gradient(135deg,#23415f,#0e1a2b);}
+  .sw[data-th="mint"]{background:linear-gradient(135deg,#5fe0c0,#56c8e0);}
+  .sw[data-th="sunset"]{background:linear-gradient(135deg,#ffce86,#ff8e8e);}
+  .sw[data-th="midnight"]{background:linear-gradient(135deg,#7c5cff,#2a2050);}
+  .planner{display:none;background:var(--card);border:1px solid var(--cardBorder);border-radius:18px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--cardShadow);}
   .planner.show{display:block;}
   .planner .prow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-  .planner .pl{font-size:15px;font-weight:800;color:#ffd27c;}
-  .planner .pnow{background:rgba(255,255,255,.06);border:1px solid #3a4d6a;color:#cdd6e4;border-radius:8px;padding:6px 11px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;}
-  .planner input[type=range]{width:100%;accent-color:#ffd27c;height:22px;}
-  .planner .ph{font-size:11px;color:#7c889c;margin-top:5px;line-height:1.5;}
-  .list{display:flex;flex-direction:column;gap:10px;}
-  .card{background:rgba(255,255,255,.045);border:1px solid #21314a;border-radius:16px;padding:14px 16px;
-    display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;transition:background .25s;cursor:pointer;}
-  .card:active{background:rgba(94,208,255,.08);}
-  .card.local{border-color:#5ed0ff;box-shadow:0 0 0 1px rgba(94,208,255,.35),0 8px 24px rgba(94,208,255,.08);}
-  .card.night{background:rgba(11,17,33,.66);}
-  .card .dot{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;
-    background:linear-gradient(135deg,#1d3450,#13263d);border:1px solid #2a3e5c;}
+  .planner .pl{font-size:15px;font-weight:800;color:var(--pText);}
+  .planner .pnow{background:var(--pnowBg);border:1px solid var(--pnowBorder);color:var(--pText);border-radius:10px;padding:6px 12px;font-size:11.5px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .planner input[type=range]{width:100%;accent-color:var(--pAcc2);height:24px;}
+  .planner .ph{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.6;}
+  .planner .ph b{color:var(--text);}
+  .list{display:flex;flex-direction:column;gap:11px;}
+  .card{background:var(--card);border:1px solid var(--cardBorder);border-radius:22px;padding:13px 13px 13px 15px;
+    display:flex;align-items:center;gap:12px;position:relative;transition:transform .12s, box-shadow .25s;cursor:pointer;box-shadow:var(--cardShadow);}
+  .card:active{transform:scale(.99);}
+  .card.local{border-color:var(--localBorder);box-shadow:0 0 0 2px var(--localRing), var(--localShadow);}
+  .card.night{background:var(--night);}
+  .card .dot{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:23px;
+    background:var(--dotBg);border:1px solid var(--dotBorder);}
   .card .info{flex:1;min-width:0;}
-  .card .city{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .card .meta{font-size:11.5px;color:#8a97ac;margin-top:1px;}
+  .card .city{font-size:15.5px;font-weight:800;color:var(--cityText);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .card .meta{font-size:11.5px;color:var(--muted2);margin-top:2px;}
   .card .meta .dn{margin-right:3px;}
-  .card .meta .diff{color:#5ed0ff;font-weight:600;}
-  .card .meta .work{color:#7fe0a0;font-weight:700;margin-left:5px;}
+  .card .meta .diff{color:var(--diff);font-weight:700;}
+  .card .meta .work{color:var(--work);font-weight:800;margin-left:5px;}
   .card .time{text-align:right;flex-shrink:0;}
-  .card .time .t{font-size:23px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.5px;}
-  .card .time .t .ap{font-size:12px;color:#94a0b4;margin-left:3px;font-weight:600;}
-  .card .time .d{font-size:11px;color:#8a97ac;margin-top:1px;}
-  .card .del{position:absolute;top:8px;right:10px;background:transparent;border:0;color:#5b6577;cursor:pointer;font-size:14px;padding:2px 4px;}
-  .card .del:hover{color:#ef6a6a;}
-  .badge{font-size:9.5px;font-weight:700;color:#0e1a2b;background:#5ed0ff;border-radius:5px;padding:1px 5px;margin-left:6px;vertical-align:middle;}
-  .empty{text-align:center;color:#6b7686;font-size:13px;padding:30px 0;font-style:italic;}
-  footer{margin-top:18px;font-size:11px;color:#5b6577;text-align:center;line-height:1.5;}
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);background:#16273d;border:1px solid #2a3e5c;
-    color:#e8eef7;padding:10px 16px;border-radius:10px;font-size:12.5px;opacity:0;transition:all .25s;pointer-events:none;z-index:40;}
+  .card .time .t{font-size:24px;font-weight:800;color:var(--timeText);font-variant-numeric:tabular-nums;letter-spacing:.5px;}
+  .card .time .t .ap{font-size:12px;color:var(--muted2);margin-left:3px;font-weight:700;}
+  .card .time .d{font-size:11px;color:var(--muted2);margin-top:1px;}
+  .card .del{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--delBg);border:0;color:var(--delColor);cursor:pointer;
+    font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s,transform .1s;}
+  .card .del:hover{background:var(--delHoverBg);color:var(--delHoverColor);}
+  .card .del:active{transform:scale(.85);}
+  .card .del-spacer{flex-shrink:0;width:30px;height:30px;}
+  .badge{font-size:9.5px;font-weight:800;color:var(--badgeText);background:linear-gradient(135deg,var(--accent1),var(--accent2));border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:middle;}
+  .empty{text-align:center;color:var(--muted2);font-size:13px;padding:34px 0;}
+  footer{margin-top:18px;font-size:11px;color:var(--footer);text-align:center;line-height:1.6;}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);background:var(--toastBg);border:1px solid var(--toastBorder);
+    color:var(--toastText);padding:11px 17px;border-radius:14px;font-size:12.5px;font-weight:600;opacity:0;transition:all .25s;pointer-events:none;z-index:40;box-shadow:0 10px 26px rgba(60,70,110,.22);}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  .modal{position:fixed;inset:0;background:rgba(6,11,18,.78);backdrop-filter:blur(5px);display:none;align-items:flex-end;justify-content:center;z-index:30;}
+  .modal{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;z-index:30;}
   .modal.show{display:flex;}
-  .sheet{background:linear-gradient(180deg,#16273d,#0e1a2b);width:100%;max-width:480px;border-radius:20px 20px 0 0;
-    border:1px solid #22324a;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:78vh;display:flex;flex-direction:column;}
-  .sheet h2{font-size:16px;margin-bottom:10px;}
-  .search{width:100%;background:#0b1422;border:1px solid #22324a;color:#e8eef7;border-radius:10px;padding:11px 13px;font-size:15px;font-family:inherit;margin-bottom:12px;}
-  .search:focus{outline:none;border-color:#5ed0ff;}
-  .opts{overflow-y:auto;display:flex;flex-direction:column;gap:6px;}
-  .opt{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid #1d2b40;border-radius:10px;padding:11px 13px;cursor:pointer;}
-  .opt:hover{border-color:#5ed0ff;}
-  .opt.added{opacity:.4;}
-  .opt .oc{font-size:18px;}
-  .opt .on{flex:1;font-size:14px;}
-  .opt .od{font-size:11px;color:#8a97ac;}
-  .closeBtn{margin-top:10px;background:rgba(255,255,255,.06);border:1px solid #2a3a55;color:#cdd6e4;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .sheet{background:var(--sheetBg);width:100%;max-width:480px;border-radius:24px 24px 0 0;
+    border:1px solid var(--sheetBorder);padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:78vh;display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(40,45,80,.18);}
+  .sheet h2{font-size:16px;margin-bottom:12px;color:var(--text);}
+  .search{width:100%;background:var(--searchBg);border:1px solid var(--searchBorder);color:var(--text);border-radius:12px;padding:12px 14px;font-size:15px;font-family:inherit;margin-bottom:12px;}
+  .search:focus{outline:none;border-color:var(--accent1);}
+  .opts{overflow-y:auto;display:flex;flex-direction:column;gap:7px;}
+  .opt{display:flex;align-items:center;gap:10px;background:var(--optBg);border:1px solid var(--optBorder);border-radius:13px;padding:11px 13px;cursor:pointer;transition:border-color .15s;}
+  .opt:hover{border-color:var(--accent1);}
+  .opt.added{opacity:.42;}
+  .opt .oc{font-size:19px;}
+  .opt .on{flex:1;font-size:14px;color:var(--cityText);font-weight:600;}
+  .opt .od{font-size:11px;color:var(--muted2);}
+  .closeBtn{margin-top:10px;background:var(--closeBg);border:1px solid var(--closeBorder);color:var(--closeColor);border-radius:14px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;}
 </style>
 </head>
-<body>
+<body data-theme="pastel">
 <div class="wrap">
   <header>
     <h1>🌍 <span class="a">World Clock</span> <span class="ver">v.u.1.0</span></h1>
@@ -94,6 +196,13 @@
   </div>
   <div class="toolbar2">
     <button class="planbtn" id="planBtn">📅 미팅 플래너</button>
+    <div class="themes" id="themes" aria-label="테마 선택">
+      <button class="sw" data-th="pastel" title="파스텔" aria-label="파스텔 테마"></button>
+      <button class="sw" data-th="dark" title="다크" aria-label="다크 테마"></button>
+      <button class="sw" data-th="mint" title="민트" aria-label="민트 테마"></button>
+      <button class="sw" data-th="sunset" title="선셋" aria-label="선셋 테마"></button>
+      <button class="sw" data-th="midnight" title="미드나잇" aria-label="미드나잇 테마"></button>
+    </div>
   </div>
   <div class="planner" id="planner">
     <div class="prow">
@@ -191,9 +300,24 @@ var CITIES=ALL_TZ.map(function(tz){
   return {tz:tz,city:d.city,country:d.country,emoji:d.emoji,curated:false};
 });
 
-var LS_KEY="worldclock_cities_v1", LS_FMT="worldclock_fmt_v1";
+var LS_KEY="worldclock_cities_v1", LS_FMT="worldclock_fmt_v1", LS_THEME="worldclock_theme_v1";
 function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } }
 function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+// ===== 테마 =====
+var THEMES=["pastel","dark","mint","sunset","midnight"];
+var THEME_META={pastel:"#eaf3ff",dark:"#0e1a2b",mint:"#e3fbf3",sunset:"#fff1e6",midnight:"#171232"};
+var theme=lsGet(LS_THEME,"pastel"); if(THEMES.indexOf(theme)<0) theme="pastel";
+function applyTheme(t){
+  document.body.setAttribute("data-theme",t);
+  var m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content",THEME_META[t]||"#eaf3ff");
+  var sws=document.querySelectorAll(".sw");
+  for(var i=0;i<sws.length;i++) sws[i].classList.toggle("on",sws[i].getAttribute("data-th")===t);
+}
+(function(){ var sws=document.querySelectorAll(".sw");
+  for(var i=0;i<sws.length;i++){ (function(s){ s.addEventListener("click",function(){ theme=s.getAttribute("data-th"); lsSet(LS_THEME,theme); applyTheme(theme); }); })(sws[i]); }
+})();
+applyTheme(theme);
 
 var localTz="UTC";
 try{ localTz=Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC"; }catch(e){}
@@ -277,7 +401,7 @@ function buildList(){
       '<div class="info"><div class="city">'+esc(ci.city)+(isLocal?'<span class="badge">내 위치</span>':'')+'</div>'+
         '<div class="meta"><span class="dn"></span>'+esc(ci.country)+' · <span class="diff"></span><span class="work"></span></div></div>'+
       '<div class="time"><div class="t"></div><div class="d"></div></div>'+
-      (isLocal?'':'<button class="del" aria-label="삭제">✕</button>');
+      (isLocal?'<div class="del-spacer"></div>':'<button class="del" aria-label="삭제">✕</button>');
     listEl.appendChild(card);
     var ref={tz:tz,emoji:ci.emoji,card:card,
       dotEl:card.querySelector(".dot"), dnEl:card.querySelector(".dn"), diffEl:card.querySelector(".diff"),
@@ -341,7 +465,7 @@ function renderOpts(q){
   var LIMIT=200; var shown=pool.slice(0,LIMIT);
   if(!q){
     var hint=document.createElement("div");
-    hint.style.cssText="font-size:11.5px;color:#7c889c;padding:2px 2px 6px;";
+    hint.style.cssText="font-size:11.5px;color:var(--muted2);padding:2px 2px 6px;";
     hint.textContent="인기 도시 "+pool.length+"개 · 검색하면 전 세계 "+CITIES.length+"개 시간대 모두 추가 가능";
     optsEl.appendChild(hint);
   }
@@ -356,7 +480,7 @@ function renderOpts(q){
   });
   if(pool.length>LIMIT){
     var more=document.createElement("div");
-    more.style.cssText="font-size:11.5px;color:#7c889c;text-align:center;padding:8px;";
+    more.style.cssText="font-size:11.5px;color:var(--muted2);text-align:center;padding:8px;";
     more.textContent="…그 외 "+(pool.length-LIMIT)+"개 — 검색어를 더 입력해 좁혀보세요";
     optsEl.appendChild(more);
   }
