@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "io.github.papaya5rhw1984.worldclock",
+    "sha256_cert_fingerprints": ["8D:A5:63:CE:E4:84:6C:40:5A:AD:22:03:ED:B4:25:97:9A:8A:99:2E:B9:8B:09:F0:49:EB:A6:08:A8:8F:03:9A"]
+  }
+}]
